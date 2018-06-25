@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Flask-DataTables</title>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+</head>
+
+<script>
+$(document).ready(function() {
+	$('#example').dataTable( {
+		"ajax": "{{ url_for('get_fun_data') }}",
+    "defaultContent": "<i>Not set</i>",
+    "columns": [
+            { "data": "Function Link" },
+            { "data": "Func State" },
+            { "data": "Func Regular Name" },
+            { "data": "Func Owner" },
+            { "data": "Func Title" },
+            { "data": "Func Indus Resp" },
+            { "data": "FQA QA Task Owner" },
+            { "data": "FQA Progress" },
+            { "data": "FQA Target Week" },
+            { "data": "FIR Progress" },
+            { "data": "FIR Target Week" },
+            { "data": "QA Judgment" },
+            { "data": "QA Comment" },
+            { "data": "count_total_FV" },
+            { "data": "count_total" },
+            { "data": "count_mand" },
+            { "data": "count_sev1" },
+            { "data": "Specify State" },
+            { "data": "QA Sign Off Status" },
+            { "data": "Implement State" },
+            { "data": "Implement Target Week" }
+        ]
+	});
+} );
+</script>
+
+<body>
+	<div class="container">
+	<table class='table' id='example'>
+		<thead>
+			<tr>
+				{% for col in columns %}
+				<th>{{ col }}</th>
+				{% endfor %}
+	</table>
+	</div>
+</body>
+
+</html>

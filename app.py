@@ -1,5 +1,7 @@
 # -*- coding:utf-8 -*-
-
+import pandas as  pd
+import time
+import os
 import json
 
 from flask import Flask, request, render_template
@@ -7,71 +9,30 @@ app = Flask(__name__)
 
 app.debug = True
 
-class BaseDataTables:
-    
-    def __init__(self, request, columns, collection):
-        
-        self.columns = columns
-
-        self.collection = collection
-         
-        # values specified by the datatable for filtering, sorting, paging
-        self.request_values = request.values
-         
- 
-        # results from the db
-        self.result_data = None
-         
-        # total in the table after filtering
-        self.cardinality_filtered = 0
- 
-        # total in the table unfiltered
-        self.cadinality = 0
- 
-        self.run_queries()
-    
-    def output_result(self):
-        
-        output = {}
-
-        # output['sEcho'] = str(int(self.request_values['sEcho']))
-        # output['iTotalRecords'] = str(self.cardinality)
-        # output['iTotalDisplayRecords'] = str(self.cardinality_filtered)
-        aaData_rows = []
-        
-        for row in self.result_data:
-            aaData_row = []
-            for i in range(len(self.columns)):
-                print row, self.columns, self.columns[i]
-                aaData_row.append(str(row[ self.columns[i] ]).replace('"','\\"'))
-            aaData_rows.append(aaData_row)
-            
-        output['aaData'] = aaData_rows
-        
-        return output
-    
-    def run_queries(self):
-        
-         self.result_data = self.collection
-         self.cardinality_filtered = len(self.result_data)
-         self.cardinality = len(self.result_data)
-
-columns = [ 'column_1', 'column_2', 'column_3', 'column_4']
+print ("Last Refresh ... {}" .format(time.ctime(os.path.getmtime('Q:\\qa\\work_areas\\xkk\\do_not_delete\\workspace\\fun_dash\\files\\function_data.xlsx'))))
+pd.set_option('display.max_colwidth', -1)
+df = pd.read_excel("Q:\\qa\\work_areas\\xkk\\do_not_delete\\workspace\\fun_dash\\files\\function_data.xlsx")
+me = df['Func Indus Resp'].str.contains('HT1')
+nt_rel = df['Func State'] != 'Released'
+release = df['Func Regular Name'].str.contains('FD04')
+imp_st = df['Implement State'] == 'Done'
+qaj = df['QA Judgment'].str.contains('Red')
+new_df=df[me & release&nt_rel]
+pd_columns = df.columns
+json_data = new_df.to_json(orient='records')
+s1 = '{\"data\" :'
+s2 = "}"
+new_json_data = s1+json_data+s2
+print (pd_columns)
 
 @app.route('/')
-def index():
-    return render_template('index.html', columns=columns)
-    return 'Hello World!'
+def dataIndex():
+    return render_template('data.html', columns=pd_columns)
+    return 'Hello Data World!'
 
-@app.route('/_server_data')
-def get_server_data():
-    
-    collection = [dict(zip(columns, [1,2,3,4])), dict(zip(columns, [5,5,5,5]))]
-    
-    results = BaseDataTables(request, columns, collection).output_result()
-    
-    # return the results as a string for the datatable
-    return json.dumps(results)
+@app.route('/fun_data')
+def get_fun_data():
+    return new_json_data
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
