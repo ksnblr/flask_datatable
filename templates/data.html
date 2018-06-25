@@ -1,11 +1,6 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Flask-DataTables</title>
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -15,8 +10,10 @@
 <script>
 $(document).ready(function() {
 	$('#example').dataTable( {
-		"ajax": "{{ url_for('get_fun_data') }}",
-    "defaultContent": "<i>Not set</i>",
+		"bProcessing": false,
+		"bjQueryUI": false,
+		"sAjaxSource": "{{ url_for('get_fun_data') }}",
+    //"defaultContent": "<i>Not set</i>",
     "columns": [
             { "data": "Function Link" },
             { "data": "Func State" },
@@ -46,7 +43,7 @@ $(document).ready(function() {
 
 <body>
 	<div class="container">
-	<table class='table' id='example'>
+	<table id='example' class="cell-border" style="width:100%">
 		<thead>
 			<tr>
 				{% for col in columns %}

@@ -3,31 +3,22 @@ import pandas as  pd
 import time
 import os
 import json
-
+from pyfiles.pyfuncs import *
 from flask import Flask, request, render_template
 app = Flask(__name__)
 
 app.debug = True
 
-print ("Last Refresh ... {}" .format(time.ctime(os.path.getmtime('Q:\\qa\\work_areas\\xkk\\do_not_delete\\workspace\\fun_dash\\files\\function_data.xlsx'))))
-pd.set_option('display.max_colwidth', -1)
-df = pd.read_excel("Q:\\qa\\work_areas\\xkk\\do_not_delete\\workspace\\fun_dash\\files\\function_data.xlsx")
-me = df['Func Indus Resp'].str.contains('HT1')
-nt_rel = df['Func State'] != 'Released'
-release = df['Func Regular Name'].str.contains('FD04')
-imp_st = df['Implement State'] == 'Done'
-qaj = df['QA Judgment'].str.contains('Red')
-new_df=df[me & release&nt_rel]
-pd_columns = df.columns
-json_data = new_df.to_json(orient='records')
-s1 = '{\"data\" :'
-s2 = "}"
-new_json_data = s1+json_data+s2
-print (pd_columns)
+func_filename = "Q:\\qa\\work_areas\\xkk\\do_not_delete\\workspace\\fun_dash\\files\\function_data.xlsx"
+print ("Last Refresh ... {}" .format(time.ctime(os.path.getmtime(func_filename))))
+
+df_out = read_dataframe(func_filename)
+new_json_data = df_out[0]
+pd_columns = df_out[1]
 
 @app.route('/')
 def dataIndex():
-    return render_template('data.html', columns=pd_columns)
+    return render_template('data.html', columns=pd_columns, jsd = new_json_data)
     return 'Hello Data World!'
 
 @app.route('/fun_data')
