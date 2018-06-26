@@ -15,11 +15,8 @@ def read_dataframe(filename):
     qaj = df['QA Judgment'].str.contains('Red')
 
     pd_columns = df.columns
-    new_df = df[me&release]
+    new_df = df[me&release&nt_rel]
     json_data = new_df.to_json(orient='records')
     s1 = '{\"data\" :'
     s2 = "}"
-    f = open("temp.json",'w')
-    f.write(s1+json_data+s2)
-    f.close()
     return [s1+json_data+s2,pd_columns]
