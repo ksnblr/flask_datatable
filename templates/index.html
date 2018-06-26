@@ -20,9 +20,6 @@
 <script>
 $(document).ready(function() {
 	$('#example').dataTable( {
-		"sDom": "<'row-fluid'<'span6 toolbar'><'span6'>r>t<'row-fluid'<'span6'f><'span6'p>>",
-		"bProcessing": true,
-		"bjQueryUI": true,
 		"sAjaxSource": "{{ url_for('get_server_data') }}",
 	});
 } );

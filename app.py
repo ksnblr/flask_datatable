@@ -19,10 +19,11 @@ pd_columns = df_out[1]
 @app.route('/')
 def dataIndex():
     return render_template('data.html', columns=pd_columns, jsd = new_json_data)
-    return 'Hello Data World!'
 
 @app.route('/fun_data')
 def get_fun_data():
+    df_out = read_dataframe(func_filename)
+    new_json_data = df_out[0]
     return new_json_data
 
 if __name__ == '__main__':
