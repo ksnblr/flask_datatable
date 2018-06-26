@@ -3,53 +3,83 @@
     <meta charset="utf-8">
     <title>Flask-DataTables</title>
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/func.css') }}">
 	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
 	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 </head>
-
 <script>
 $(document).ready(function() {
-	$('#example').dataTable( {
-		"bProcessing": false,
-		"bjQueryUI": false,
-		"sAjaxSource": "{{ url_for('get_fun_data') }}",
-    //"defaultContent": "<i>Not set</i>",
-    "columns": [
-            { "data": "Function Link" },
-            { "data": "Func State" },
-            { "data": "Func Regular Name" },
-            { "data": "Func Owner" },
-            { "data": "Func Title" },
-            { "data": "Func Indus Resp" },
-            { "data": "FQA QA Task Owner" },
-            { "data": "FQA Progress" },
-            { "data": "FQA Target Week" },
-            { "data": "FIR Progress" },
-            { "data": "FIR Target Week" },
-            { "data": "QA Judgment" },
-            { "data": "QA Comment" },
-            { "data": "count_total_FV" },
-            { "data": "count_total" },
-            { "data": "count_mand" },
-            { "data": "count_sev1" },
-            { "data": "Specify State" },
-            { "data": "QA Sign Off Status" },
-            { "data": "Implement State" },
-            { "data": "Implement Target Week" }
-        ]
-	});
+    // Setup - add a text input to each footer cell
+    $('#example tfoot th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+    } );
+
+    // DataTable
+    var table = $('#example').DataTable({
+      "search": {
+        "regex": true
+                },
+        "bProcessing": false,
+        "bjQueryUI": false,
+        "sAjaxSource": "{{ url_for('get_fun_data') }}",
+        //"defaultContent": "<i>Not set</i>",
+        "columns": [
+                { "data": "Function Link" },
+                { "data": "Func State" },
+                { "data": "Func Regular Name" },
+                { "data": "Func Owner" },
+                { "data": "Func Title" },
+                { "data": "Func Indus Resp" },
+                { "data": "FQA QA Task Owner" },
+                { "data": "FQA Progress" },
+                { "data": "FQA Target Week" },
+                { "data": "FIR Progress" },
+                { "data": "FIR Target Week" },
+                { "data": "QA Judgment" },
+                { "data": "QA Comment" },
+                { "data": "count_total_FV" },
+                { "data": "count_total" },
+                { "data": "count_mand" },
+                { "data": "count_sev1" },
+                { "data": "Specify State" },
+                { "data": "QA Sign Off Status" },
+                { "data": "Implement State" },
+                { "data": "Implement Target Week" }
+            ]
+      });
+
+    // Apply the search
+    table.columns().every( function () {
+        var that = this;
+        $( 'input', this.footer() ).on( 'keyup change', function () {
+            if ( that.search() !== this.value ) {
+                that
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
 } );
+
 </script>
 
 <body>
+  <div>Last Refresh : {{lst_ref}}</div>
 	<div class="container">
-    <table id="example" class="cell-border" style="width:100%">
-		<thead>
+  <table id="example" class="display" style="width:100%">
+    <thead>
 			<tr>
 				{% for col in columns %}
 				<th>{{ col }}</th>
 				{% endfor %}
       </tr>
+      <tfoot>
+  			<tr>
+  				{% for col in columns %}
+  				<th>{{ col }}</th>
+  				{% endfor %}
+        </tr>
 	</table>
 	</div>
 </body>

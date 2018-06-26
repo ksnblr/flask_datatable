@@ -9,13 +9,14 @@ def read_dataframe(filename):
 
     # Dataframe filter variables
     me = df['Func Indus Resp'].str.contains('XKK')
+    hakim = df['Func Indus Resp'].str.contains('HT1')
     nt_rel = df['Func State'] != 'Released'
     release = df['Func Regular Name'].str.contains('FD04')
     imp_st = df['Implement State'] == 'Done'
     qaj = df['QA Judgment'].str.contains('Red')
 
     pd_columns = df.columns
-    new_df = df[me&release&nt_rel]
+    new_df = df[(me|hakim)&nt_rel]
     json_data = new_df.to_json(orient='records')
     s1 = '{\"data\" :'
     s2 = "}"
