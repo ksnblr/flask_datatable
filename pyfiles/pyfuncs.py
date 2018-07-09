@@ -16,6 +16,7 @@ def read_dataframe(filename):
     qaj = df['QA Judgment'].str.contains('Red')
 
     pd_columns = df.columns
+    #new_df = df[(me|hakim)]
     new_df = df[(me|hakim)&nt_rel]
     json_data = new_df.to_json(orient='records')
     s1 = '{\"data\" :'
